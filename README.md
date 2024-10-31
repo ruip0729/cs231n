@@ -1,4 +1,4 @@
 # cs231n
-有关cs231n课程的笔记和左右
 ## 课程笔记
+[CS231n 官方笔记授权翻译总集篇发布](https://github.com/whyscience/CS231n-Note-Translation_CN/tree/master)
 ## 作业
