@@ -1,15 +1,21 @@
 详细推导Softmax函数的导数。首先，Softmax函数是将一个向量的元素转换为概率分布的函数。对于一个输入向量
+
 $$
 \mathbf{z} = (z_1, z_2, \dots, z_n) 
 $$
+
 Softmax函数的第 \( i \) 个输出是：
+
 $$
 \text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{k=1}^{n} e^{z_k}}
 $$
+
 我们需要计算的是
+
 $$
  \frac{\partial \text{Softmax}(z_i)}{\partial z_j} 
 $$
+
 即Softmax函数的第 \( i \) 个输出对第 \( j \) 个输入的导数。
 
 ### 1. 计算导数
@@ -22,29 +28,37 @@ $$
 $$
 \frac{\partial \text{Softmax}(z_i)}{\partial z_i}
 $$
+
 首先，记住 Softmax 函数的表达式：
 
 $$
 \text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{k=1}^{n} e^{z_k}}
 $$
+
 为了求导数，我们可以使用商法则。商法则表示对于两个函数 \( f(z) \) 和 \( g(z) \)，其商的导数为：
 
 $$
 \frac{d}{dz} \left( \frac{f(z)}{g(z)} \right) = \frac{f'(z)g(z) - f(z)g'(z)}{g(z)^2}
 $$
+
 在我们的情况中，
+
 $$
  f(z) = e^{z_i} 和  g(z) = \sum_{k=1}^{n} e^{z_k} 
 $$
+
 所以：
+
 $$
 \frac{\partial \text{Softmax}(z_i)}{\partial z_i} = \frac{e^{z_i} \cdot \sum_{k=1}^{n} e^{z_k} - e^{z_i} \cdot e^{z_i}}{(\sum_{k=1}^{n} e^{z_k})^2}
 $$
+
 化简后，得到：
 
 $$
 \frac{\partial \text{Softmax}(z_i)}{\partial z_i} = \frac{e^{z_i} \left( \sum_{k=1}^{n} e^{z_k} - e^{z_i} \right)}{(\sum_{k=1}^{n} e^{z_k})^2}
 $$
+
 可以进一步整理成：
 
 $$
