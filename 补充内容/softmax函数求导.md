@@ -69,10 +69,13 @@ $$
 #### 1.2 \( i ≠ j \) 的情况（对其他变量求导）
 
 对于 \( i ≠ j \)，我们要求的是
+
 $$
 \frac{\partial \text{Softmax}(z_i)}{\partial z_j} 
 $$
+
 仍然从 Softmax 函数的定义出发：
+
 $$
 \text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{k=1}^{n} e^{z_k}}
 $$
@@ -84,23 +87,29 @@ $$
 因此它的导数为0，
 
 对分母
+
 $$
 \sum_{k=1}^{n} e^{z_k}
 $$
+
 求导时，得到：
+
 $$
 \frac{\partial}{\partial z_j} \left( \sum_{k=1}^{n} e^{z_k} \right) = e^{z_j}
 $$
+
 因此，使用商法则，得到：
 
 $$
 \frac{\partial \text{Softmax}(z_i)}{\partial z_j} = \frac{0 \cdot \sum_{k=1}^{n} e^{z_k} - e^{z_i} \cdot e^{z_j}}{\left( \sum_{k=1}^{n} e^{z_k} \right)^2}
 $$
+
 化简后：
 
 $$
 \frac{\partial \text{Softmax}(z_i)}{\partial z_j} = -\frac{e^{z_i} \cdot e^{z_j}}{\left( \sum_{k=1}^{n} e^{z_k} \right)^2}
 $$
+
 这个结果可以写成：
 
 $$
