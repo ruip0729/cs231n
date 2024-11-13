@@ -3,10 +3,8 @@
 
 注：作业中的代码实现、公式推导均为本人所写，如有错误，欢迎指正。
 
-# 课程笔记
+## 课程笔记
 [CS231n 官方笔记授权翻译总集篇发布](https://github.com/whyscience/CS231n-Note-Translation_CN/tree/master)
-
-# 作业
 
 ## 作业-1
 图像分类、kNN、SVM、Softmax、全连接神经网络
