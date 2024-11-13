@@ -13,7 +13,16 @@ https://cs231n.github.io/
 2. SVM损失函数实现 [linear_svm.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/linear_svm.py)
 3. 线性分类器实现 [linear_classifier.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/linear_classifier.py)
 ### Q3:Implement a Softmax classifier
-Softmax的作业引导[softmax.ipynb](https://github.com/ruip0729/cs231n/blob/main/assignment1/softmax.ipynb)，Softmax损失实现 [softmax.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/softmax.py)，线性分类器实现 [linear_classifier.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/linear_classifier.py)，Softmax函数求导 [softmax.md](https://github.com/ruip0729/cs231n/blob/main/%E8%A1%A5%E5%85%85%E5%86%85%E5%AE%B9/softmax%E5%87%BD%E6%95%B0%E6%B1%82%E5%AF%BC.md)
+1. Softmax的作业引导[softmax.ipynb](https://github.com/ruip0729/cs231n/blob/main/assignment1/softmax.ipynb)
+2. Softmax损失实现 [softmax.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/softmax.py)
+3. 线性分类器实现 [linear_classifier.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/linear_classifier.py)
+4. Softmax函数求导 [softmax.md](https://github.com/ruip0729/cs231n/blob/main/%E8%A1%A5%E5%85%85%E5%86%85%E5%AE%B9/softmax%E5%87%BD%E6%95%B0%E6%B1%82%E5%AF%BC.md)
+### Q4:Two-Layer Neural Network
+1. TwoLayerNet的作业引导
+2. 单层神经网络中前向传播和反向传播的实现
+3. 两层神经网络的实现
+4. 训练模型的封装
+### Q5:Higher Level Representations: Image Features
 ## 作业-2
 全连接和卷积网络、批量归一化、Dropout、Pytorch和网络可视化
 ## 作业-3
