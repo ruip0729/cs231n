@@ -7,10 +7,9 @@
 [CS231n 官方笔记授权翻译总集篇发布](https://github.com/whyscience/CS231n-Note-Translation_CN/tree/master)
 
 # 作业
-https://cs231n.github.io/
 
 ## 作业-1
-图像分类、kNN、SVM、Softmax、全连接神经网络
+图像分类、kNN、SVM、Softmax、全连接神经网络 https://cs231n.github.io/assignments2024/assignment1/
 ### Q1:k-Nearest Neighbor classifier
 1. kNN的作业引导 [knn.ipynb](https://github.com/ruip0729/cs231n/blob/main/assignment1/knn.ipynb)
 2. kNN的实现 [k_nearest_neighbor.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/k_nearest_neighbor.py)
