@@ -1,4 +1,6 @@
 # cs231n-assignment(2024)
+CS231n: Convolutional Neural Networks for Visual Recognition(https://cs231n.github.io/)课程可以很好地帮助我们进行计算机视觉领域的入门，我主要按照课程的官方笔记进行学习，期间学习了一些视频课程，完成了3次作业，并在此记录作业的解答过程。
+注：作业中的代码实现、公式推导均为本人所写，如有错误，欢迎指正。
 # 课程笔记
 [CS231n 官方笔记授权翻译总集篇发布](https://github.com/whyscience/CS231n-Note-Translation_CN/tree/master)
 # 作业
@@ -9,11 +11,11 @@ https://cs231n.github.io/
 1. kNN的作业引导 [knn.ipynb](https://github.com/ruip0729/cs231n/blob/main/assignment1/knn.ipynb)
 2. kNN的实现 [k_nearest_neighbor.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/k_nearest_neighbor.py)
 ### Q2:Training a Support Vector Machine
-1. SVM的作业引导[svm.ipynb](https://github.com/ruip0729/cs231n/blob/main/assignment1/svm.ipynb)
+1. SVM的作业引导 [svm.ipynb](https://github.com/ruip0729/cs231n/blob/main/assignment1/svm.ipynb)
 2. SVM损失函数实现 [linear_svm.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/linear_svm.py)
 3. 线性分类器实现 [linear_classifier.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/linear_classifier.py)
 ### Q3:Implement a Softmax classifier
-1. Softmax的作业引导[softmax.ipynb](https://github.com/ruip0729/cs231n/blob/main/assignment1/softmax.ipynb)
+1. Softmax的作业引导 [softmax.ipynb](https://github.com/ruip0729/cs231n/blob/main/assignment1/softmax.ipynb)
 2. Softmax损失实现 [softmax.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/softmax.py)
 3. 线性分类器实现 [linear_classifier.py](https://github.com/ruip0729/cs231n/blob/main/assignment1/cs231n/classifiers/linear_classifier.py)
 4. Softmax函数求导 [softmax.md](https://github.com/ruip0729/cs231n/blob/main/%E8%A1%A5%E5%85%85%E5%86%85%E5%AE%B9/softmax%E5%87%BD%E6%95%B0%E6%B1%82%E5%AF%BC.md)
