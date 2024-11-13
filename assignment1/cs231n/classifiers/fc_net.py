@@ -55,6 +55,18 @@ class TwoLayerNet(object):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+        # 权重初始化为高斯分布
+        self.params['W1'] = np.random.randn(input_dim, hidden_dim) * weight_scale  
+        
+        # 偏置初始化为零
+        self.params['b1'] = np.zeros(hidden_dim)  
+
+        # 权重初始化为高斯分布
+        self.params['W2'] = np.random.randn(hidden_dim, num_classes) * weight_scale  
+
+        # 偏置初始化为零
+        self.params['b2'] = np.zeros(num_classes)  
+
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -88,6 +100,14 @@ class TwoLayerNet(object):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+        X_reshape=X.reshape(X.shape[0],-1)
+
+        hidden_layer_input=X_reshape.dot(self.params['W1'])+self.params['b1']
+
+        hidden_layer_output=np.maximum(0,hidden_layer_input)
+
+        scores=hidden_layer_output.dot(self.params['W2'])+self.params['b2']
+
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -111,6 +131,36 @@ class TwoLayerNet(object):
         # of 0.5 to simplify the expression for the gradient.                      #
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+        # Softmax loss calculation
+        # Shift scores for numerical stability
+        shifted_scores = scores - np.max(scores, axis=1, keepdims=True)
+        exp_scores = np.exp(shifted_scores)
+        softmax_scores = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
+
+        # 正向传播计算损失
+        correct_class_scores = softmax_scores[np.arange(X.shape[0]), y]
+        data_loss = -np.sum(np.log(correct_class_scores)) / X.shape[0]
+
+        reg_loss = 0.5 * self.reg * (np.sum(self.params['W1']**2) + np.sum(self.params['W2']**2))
+
+        loss=data_loss+reg_loss
+
+        # 反向传播计算梯度
+        dscores = softmax_scores
+        dscores[np.arange(X.shape[0]), y] -= 1
+        dscores /= X.shape[0]
+
+         # Gradient with respect to W2 and b2
+        grads['W2'] = hidden_layer_output.T.dot(dscores) + self.reg * self.params['W2']
+        grads['b2'] = np.sum(dscores, axis=0)
+
+        dhidden = dscores.dot(self.params['W2'].T)
+        # Derivative of ReLU
+        dhidden[hidden_layer_output <= 0] = 0  
+
+        grads['W1'] = X_reshape.T.dot(dhidden)+self.reg * self.params['W1']
+        grads['b1'] = np.sum(dhidden, axis=0)
 
         pass
 
