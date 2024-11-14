@@ -26,7 +26,8 @@
 3. 两层神经网络的实现 [fc_net.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment1/cs231n/classifiers/fc_net.py)
 4. 训练模型的封装 [solver.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment1/cs231n/solver.py)
 ### Q5:Higher Level Representations: Image Features
-
+1. 图像特征的作业引导 [features.ipynb](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment1/features.ipynb)
+2. Color Histogram和Histogram of Oriented Gradients (HoG) [课程ppt-lecture5](https://cs231n.stanford.edu/slides/2024/lecture_5.pdf)
 ## 作业-2
 全连接和卷积网络、批量归一化、Dropout、Pytorch和网络可视化
 
