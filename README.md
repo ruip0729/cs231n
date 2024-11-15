@@ -30,6 +30,19 @@
 2. Color Histogram和Histogram of Oriented Gradients (HoG) [课程ppt-lecture5](https://cs231n.stanford.edu/slides/2024/lecture_5.pdf)
 ## 作业-2
 全连接和卷积网络、批量归一化、Dropout、Pytorch和网络可视化
+### Q1:Multi-Layer Fully Connected Neural Networks
+1. 多层全连接神经网络的作业引导 [FullyConnectedNets.ipynb](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/FullyConnectedNets.ipynb)
+2. FullyConnectedNet类的实现 [fc_net.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/classifiers/fc_net.py)
+3. 单层神经网络中前向传播和反向传播的实现 [layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/layers.py)
+4. 多种更新规则的实现（sgd、sgd_momentum、rmsprop和adam） [optim.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/optim.py)
+
+### Q2:Batch Normalization
+
+### Q3:Dropout
+
+### Q4:Convolutional Neural Networks
+
+### Q5:PyTorch on CIFAR-10
 
 ## 作业-3
 网络可视化、使用RNN和Transformer的图像描述、生成对抗网络、自监督对比学习
