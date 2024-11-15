@@ -69,6 +69,12 @@ def sgd_momentum(w, dw, config=None):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    mu=config["momentum"]
+    lr=config["learning_rate"]
+
+    v=mu*v-lr*dw
+    next_w=w+v
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -106,6 +112,15 @@ def rmsprop(w, dw, config=None):
     # config['cache'].                                                        #
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+    cache = config["cache"]
+    decay_rate = config["decay_rate"]
+    learning_rate = config["learning_rate"]
+    epsilon = config["epsilon"]
+
+    cache = decay_rate * cache + (1 - decay_rate) * dw**2
+    next_w = w - learning_rate * dw / (np.sqrt(cache) + epsilon)
+    config["cache"] = cache
+
 
     pass
 
@@ -151,6 +166,26 @@ def adam(w, dw, config=None):
     # using it in any calculations.                                           #
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+    m = config["m"]
+    v = config["v"]
+    t = config["t"] + 1
+    beta1 = config["beta1"]
+    beta2 = config["beta2"]
+    epsilon = config["epsilon"]
+    learning_rate = config["learning_rate"]
+
+    m = beta1 * m + (1 - beta1) * dw
+    v = beta2 * v + (1 - beta2) * (dw**2)
+
+    # 偏差处理，使得刚开始时两个动量有较高的初始值
+    m_hat = m / (1 - beta1**t)
+    v_hat = v / (1 - beta2**t)
+
+    next_w = w - learning_rate * m_hat / (np.sqrt(v_hat) + epsilon)
+
+    config["m"], config["v"], config["t"] = m, v, t
+
 
     pass
 
