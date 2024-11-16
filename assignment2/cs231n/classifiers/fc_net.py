@@ -178,9 +178,22 @@ class FullyConnectedNet(object):
             #     out, bn_cache = batchnorm_forward(out, gamma, beta, self.bn_params[i - 1])
             #     cache[f'bn{i}'] = bn_cache
 
+            if self.normalization == "batchnorm":
+                gamma, beta = self.params[f'gamma{i}'], self.params[f'beta{i}']
+                bn_out, bn_cache = batchnorm_forward(affine_out, gamma, beta, self.bn_params[i - 1])
+                cache[f'bn_cache{i}'] = bn_cache
+                layer_input = bn_out
+            elif self.normalization == "layernorm":
+                gamma, beta = self.params[f'gamma{i}'], self.params[f'beta{i}']
+                ln_out, ln_cache = layernorm_forward(affine_out, gamma, beta, self.bn_params[i - 1])
+                cache[f'ln_cache{i}'] = ln_cache
+                layer_input = ln_out
+            else:
+                layer_input = affine_out
+
 
             # ReLU 激活
-            relu_out, relu_cache = relu_forward(affine_out)  
+            relu_out, relu_cache = relu_forward(layer_input)  
 
             # 保存cache
             cache[f'affine_cache{i}'] = affine_cache
@@ -241,14 +254,24 @@ class FullyConnectedNet(object):
 
         # 从倒数第二层向前
         for i in range(self.num_layers-1,0,-1):
-            dout=relu_backward(dout,cache[f'relu_cache{i}'])
+            
+            # # Dropout backward
+            # if self.use_dropout:
+            #     dout = dropout_backward(dout, cache[f'dropout_cache{i}'])
 
+            # ReLU backward
+            dout = relu_backward(dout, cache[f'relu_cache{i}'])
+
+            # Batch Normalization or Layer Normalization backward
+            if self.normalization == "batchnorm":
+                dout, grads[f'gamma{i}'], grads[f'beta{i}'] = batchnorm_backward_alt(dout, cache[f'bn_cache{i}'])
+            elif self.normalization == "layernorm":
+                dout, grads[f'gamma{i}'], grads[f'beta{i}'] = layernorm_backward(dout, cache[f'ln_cache{i}'])
+
+            # Affine backward
             dout, grads[f'W{i}'], grads[f'b{i}'] = affine_backward(dout, cache[f'affine_cache{i}'])
-
-            # 加上正则化梯度
+            # Regularization gradient
             grads[f'W{i}'] += self.reg * self.params[f'W{i}']  
-
-
 
         pass
 
