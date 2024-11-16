@@ -212,6 +212,18 @@ def batchnorm_forward(x, gamma, beta, bn_param):
         #######################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+        sample_mean=np.mean(x,axis=0)
+        sample_var=np.var(x,axis=0)
+
+        x_normalize=(x-sample_mean)/np.sqrt(sample_var+eps)
+
+        out=gamma*x_normalize+beta
+
+        running_mean = momentum * running_mean + (1 - momentum) * sample_mean
+        running_var = momentum * running_var + (1 - momentum) * sample_var
+
+        cache=(x,x_normalize,sample_mean,sample_var,gamma,beta,eps)
+
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -226,6 +238,9 @@ def batchnorm_forward(x, gamma, beta, bn_param):
         # Store the result in the out variable.                               #
         #######################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+        x_normalize=(x-running_mean)/np.sqrt(running_var+eps)
+        out=gamma*x_normalize+beta
 
         pass
 
@@ -269,6 +284,23 @@ def batchnorm_backward(dout, cache):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    # cache=(x,x_normalize,sample_mean,sample_var,gamma,beta,eps)
+    # Unpack cache
+    x, x_hat, mean, var, gamma, beta, eps = cache
+    N, D = dout.shape
+    
+    # out = gamma*x_hat + beta
+    dbeta = np.sum(dout, axis=0)
+    dgamma = np.sum(dout * x_hat, axis=0)
+    dx_hat = dout * gamma
+
+    # x_hat = (x-mean)*(1 / sqrt(var))
+    dvar = np.sum(dx_hat * (x - mean) * -0.5 * np.power(var + eps, -1.5), axis=0)
+    dmean = np.sum(dx_hat * -1.0 / np.sqrt(var + eps), axis=0) + dvar * np.sum(-2.0 * (x - mean), axis=0) / N
+
+    # x的梯度来源于x_hat mean var 三部分
+    dx = dx_hat / np.sqrt(var + eps) + dvar * 2.0 * (x - mean) / N + dmean / N
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -303,6 +335,19 @@ def batchnorm_backward_alt(dout, cache):
     # single statement; our implementation fits on a single 80-character line.#
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+    # Unpack cache
+    x, x_hat, mean, var, gamma, beta, eps = cache
+    N, D = dout.shape
+
+    dbeta = np.sum(dout, axis=0)
+    dgamma = np.sum(dout * x_hat, axis=0)
+
+    dx_hat = dout * gamma
+    dx = (1. / N) * (1. / np.sqrt(var + eps)) * (
+        N * dx_hat - np.sum(dx_hat, axis=0) -
+        x_hat * np.sum(dx_hat * x_hat, axis=0)
+    )
 
     pass
 
@@ -350,6 +395,20 @@ def layernorm_forward(x, gamma, beta, ln_param):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    mu = np.mean(x, axis=1, keepdims=True)  # Shape: (N, 1)
+    var = np.var(x, axis=1, keepdims=True)  # Shape: (N, 1)
+
+    # Normalize the input data
+    # Shape: (N, D)
+    x_normalized = (x - mu) / np.sqrt(var + eps)  
+
+    # Scale and shift
+    # Shape: (N, D)
+    out = gamma * x_normalized + beta  
+
+    # Cache values for backward pass
+    cache = (x, x_normalized, mu, var, gamma, beta, eps)
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -385,6 +444,26 @@ def layernorm_backward(dout, cache):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    x, x_normalized, mu, var, gamma, beta, eps = cache
+    N, D = dout.shape
+
+    # out = gamma*x_hat + beta
+    dgamma = np.sum(dout * x_normalized, axis=0) 
+    dbeta = np.sum(dout, axis=0) 
+    dx_normalized = dout * gamma
+
+    std_inv = 1.0 / np.sqrt(var + eps)
+
+    # x的梯度同样由x^、var、mean三部分构成
+    dxmu1 = dx_normalized * std_inv
+
+    # (N, 1)
+    dvar = np.sum(dx_normalized * (x - mu) * -0.5 * std_inv**3, axis=1, keepdims=True)  
+
+    dmu = np.sum(-dxmu1, axis=1, keepdims=True) + dvar * np.sum(-2.0 * (x - mu), axis=1, keepdims=True) / D
+
+    # (N, D)
+    dx = dxmu1 + (dvar * 2.0 * (x - mu) / D) + (dmu / D)  
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
