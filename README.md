@@ -36,6 +36,10 @@
 3. 单层神经网络中前向传播和反向传播的实现 [layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/layers.py)
 4. 多种更新规则的实现（sgd、sgd_momentum、rmsprop和adam） [optim.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/optim.py)
 ### Q2:Batch Normalization
+1. 归一化（batch normalization和layer normalization）的作业引导 [BatchNormalization.ipynb](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/BatchNormalization.ipynb)
+2. BN和LN的前向传播和反向传播的实现 [layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/layers.py)
+3. 具有BN或LN层的全连接神经网络的实现 [fc_net.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/classifiers/fc_net.py)
+4. BN层反向传播利用链式法则求导 [批标准化中反向传播的链式法则推导.md](https://github.com/ruip0729/cs231n-assignment/blob/main/%E8%A1%A5%E5%85%85%E5%86%85%E5%AE%B9/%E6%89%B9%E6%A0%87%E5%87%86%E5%8C%96%E4%B8%AD%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD%E7%9A%84%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99%E6%8E%A8%E5%AF%BC.md)
 ### Q3:Dropout
 ### Q4:Convolutional Neural Networks
 ### Q5:PyTorch on CIFAR-10
