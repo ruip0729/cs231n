@@ -172,11 +172,7 @@ class FullyConnectedNet(object):
             # 计算affine层的输出
             affine_out, affine_cache = affine_forward(layer_input, W, b)  
             
-            # 批归一化
-            # if self.normalization == "batchnorm":  
-            #     gamma, beta = self.params[f'gamma{i}'], self.params[f'beta{i}']
-            #     out, bn_cache = batchnorm_forward(out, gamma, beta, self.bn_params[i - 1])
-            #     cache[f'bn{i}'] = bn_cache
+            # 归一化
 
             if self.normalization == "batchnorm":
                 gamma, beta = self.params[f'gamma{i}'], self.params[f'beta{i}']
@@ -203,9 +199,9 @@ class FullyConnectedNet(object):
             layer_input = relu_out
 
             # Dropout
-            # if self.use_dropout:  
-            #     out, drop_cache = dropout_forward(out, self.dropout_param)
-            #     cache[f'dropout{i}'] = drop_cache
+            if self.use_dropout:  
+                layer_input, drop_cache = dropout_forward(layer_input, self.dropout_param)
+                cache[f'drop_cache{i}'] = drop_cache
 
         # 最后一层（分类层）
         W, b = self.params[f'W{self.num_layers}'], self.params[f'b{self.num_layers}']
@@ -255,9 +251,9 @@ class FullyConnectedNet(object):
         # 从倒数第二层向前
         for i in range(self.num_layers-1,0,-1):
             
-            # # Dropout backward
-            # if self.use_dropout:
-            #     dout = dropout_backward(dout, cache[f'dropout_cache{i}'])
+            # Dropout backward
+            if self.use_dropout:
+                dout = dropout_backward(dout, cache[f'drop_cache{i}'])
 
             # ReLU backward
             dout = relu_backward(dout, cache[f'relu_cache{i}'])
