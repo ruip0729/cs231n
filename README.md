@@ -45,6 +45,12 @@
 2. Dropout层的前向传播与反向传播的实现 [layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/layers.py)
 3. 具有Dropout层的全连接神经网络的实现 [fc_net.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/classifiers/fc_net.py)
 ### Q4:Convolutional Neural Networks
+1. CNN的作业引导 [ConvolutionalNetworks.ipynb](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/ConvolutionalNetworks.ipynb)
+2. conv和pool层的前向传播和反向传播的实现（使用循环） [layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/layers.py)
+3. conv和pool层快速计算的实现（使用了im2col和reshape） [fast_layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/fast_layers.py)
+4. 各层之间的封装 [layer_utils.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/layer_utils.py)
+5. 三层CNN的实现 [cnn.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/classifiers/cnn.py)
+6. 空间批归一化和空间组归一化的实现 [layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/layers.py)
 ### Q5:PyTorch on CIFAR-10
 
 ## 作业-3
