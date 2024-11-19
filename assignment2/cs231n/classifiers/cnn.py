@@ -63,6 +63,22 @@ class ThreeLayerConvNet(object):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+        C, H, W = input_dim
+
+        # 第一层: 卷积层权重和偏置
+        self.params['W1'] = weight_scale * np.random.randn(num_filters, C, filter_size, filter_size)
+        self.params['b1'] = np.zeros(num_filters)
+
+        # 第二层: 全连接层权重和偏置
+        pool_output_dim = (H // 2) * (W // 2) * num_filters
+        self.params['W2'] = weight_scale * np.random.randn(pool_output_dim, hidden_dim)
+        self.params['b2'] = np.zeros(hidden_dim)
+
+        # 第三层: 输出层权重和偏置
+        self.params['W3'] = weight_scale * np.random.randn(hidden_dim, num_classes)
+        self.params['b3'] = np.zeros(num_classes)
+
+
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -102,6 +118,16 @@ class ThreeLayerConvNet(object):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+        # Forward pass: Conv - ReLU - 2x2 Max Pool
+        out_conv, cache_conv = conv_relu_pool_forward(X, W1, b1, conv_param, pool_param)
+
+        # Forward pass: Affine - ReLU
+        out_affine_relu, cache_affine_relu = affine_relu_forward(out_conv, W2, b2)
+
+        # Forward pass: Affine (Output layer)
+        scores, cache_scores = affine_forward(out_affine_relu, W3, b3)
+
+
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -124,6 +150,29 @@ class ThreeLayerConvNet(object):
         # of 0.5 to simplify the expression for the gradient.                      #
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+        loss, dscores = softmax_loss(scores, y)
+        reg_loss = 0.5 * self.reg * (np.sum(W1**2) + np.sum(W2**2) + np.sum(W3**2))
+        loss += reg_loss
+
+        # Backward pass: Output layer
+        dout_affine_relu, dW3, db3 = affine_backward(dscores, cache_scores)
+
+        # Backward pass: Affine - ReLU
+        dout_conv, dW2, db2 = affine_relu_backward(dout_affine_relu, cache_affine_relu)
+
+        # Backward pass: Conv - ReLU - 2x2 Max Pool
+        _, dW1, db1 = conv_relu_pool_backward(dout_conv, cache_conv)
+
+        # Store gradients
+        grads = {
+            "W1": dW1 + self.reg * W1,
+            "b1": db1,
+            "W2": dW2 + self.reg * W2,
+            "b2": db2,
+            "W3": dW3 + self.reg * W3,
+            "b3": db3,
+        }
 
         pass
 
