@@ -52,6 +52,7 @@
 5. 三层CNN的实现 [cnn.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/classifiers/cnn.py)
 6. 空间批归一化和空间组归一化的实现 [layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment2/cs231n/layers.py)
 ### Q5:PyTorch on CIFAR-10
+1. pytorch教程 [pytorch-examples](https://github.com/jcjohnson/pytorch-examples)
 
 ## 作业-3
 网络可视化、使用RNN和Transformer的图像描述、生成对抗网络、自监督对比学习
