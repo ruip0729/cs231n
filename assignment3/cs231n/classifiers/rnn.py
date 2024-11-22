@@ -148,6 +148,48 @@ class CaptioningRNN:
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+        # Forward pass
+        # (1) Compute initial hidden state
+        h0 = features.dot(W_proj) + b_proj
+        # (2) Word embedding for captions_in
+        x_embed = W_embed[captions_in]
+        # (3) RNN/LSTM forward
+        if self.cell_type == "rnn":
+            h, rnn_cache = rnn_forward(x_embed, h0, Wx, Wh, b)
+        elif self.cell_type == "lstm":
+            h, rnn_cache = lstm_forward(x_embed, h0, Wx, Wh, b)
+        # (4) Compute scores for each timestep
+        scores, vocab_cache = temporal_affine_forward(h, W_vocab, b_vocab)
+        # (5) Compute softmax loss
+        loss, dscores = temporal_softmax_loss(scores, captions_out, mask)
+
+        # Backward pass
+        # (4) Gradients for temporal affine layer
+        dh, dW_vocab, db_vocab = temporal_affine_backward(dscores, vocab_cache)
+        # (3) Gradients for RNN/LSTM
+        if self.cell_type == "rnn":
+            dx, dh0, dWx, dWh, db = rnn_backward(dh, rnn_cache)
+        elif self.cell_type == "lstm":
+            dx, dh0, dWx, dWh, db = lstm_backward(dh, rnn_cache)
+        # (2) Gradients for word embeddings
+        dW_embed = np.zeros_like(W_embed)
+        np.add.at(dW_embed, captions_in.flatten(), dx.reshape(-1, dx.shape[2]))
+        # (1) Gradients for image feature projection
+        dW_proj = features.T.dot(dh0)
+        db_proj = np.sum(dh0, axis=0)
+
+        # Store gradients
+        grads = {
+            "W_proj": dW_proj,
+            "b_proj": db_proj,
+            "W_embed": dW_embed,
+            "Wx": dWx,
+            "Wh": dWh,
+            "b": db,
+            "W_vocab": dW_vocab,
+            "b_vocab": db_vocab,
+        }
+
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -215,6 +257,32 @@ class CaptioningRNN:
         # you are using an LSTM, initialize the first cell state to zeros.        #
         ###########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+        # (1) Initialize hidden state from image features
+        h = features.dot(W_proj) + b_proj
+        if self.cell_type == "lstm":
+            c = np.zeros_like(h)
+
+        # (2) Start with the <START> token
+        word = np.full((N,), self._start, dtype=np.int32)
+
+        # Loop through time steps
+        for t in range(max_length):
+            # (1) Embed the current word
+            x_t = W_embed[word]
+
+            # (2) RNN/LSTM step forward
+            if self.cell_type == "rnn":
+                h, _ = rnn_step_forward(x_t, h, Wx, Wh, b)
+            elif self.cell_type == "lstm":
+                h, c, _ = lstm_step_forward(x_t, h, c, Wx, Wh, b)
+
+            # (3) Compute scores and select the next word
+            scores = h.dot(W_vocab) + b_vocab
+            word = np.argmax(scores, axis=1)
+
+            # (4) Store the word in captions
+            captions[:, t] = word
 
         pass
 
