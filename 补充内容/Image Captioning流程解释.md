@@ -67,26 +67,30 @@
 1. **图像特征：(N,D)**
 
    - 假设有 2 张图片，CNN 提取的特征：
-     $$
-     \text{img-features} = \begin{bmatrix} f_1^{(1)}, f_2^{(1)}, \dots, f_{300}^{(1)} \\ f_1^{(2)}, f_2^{(2)}, \dots, f_{300}^{(2)} \end{bmatrix}, \quad \text{shape: } (2, 300)
-     $$
+     
+$$
+\text{img-features} = \begin{bmatrix} f_1^{(1)}, f_2^{(1)}, \dots, f_{300}^{(1)} \\ f_1^{(2)}, f_2^{(2)}, \dots, f_{300}^{(2)} \end{bmatrix}, \quad \text{shape: } (2, 300)
+$$
      
 
 2. **描述序列输入：(N,T,D)**
 
-   - 假设描述嵌入如下： 
-     $$
-     \text{x} = \begin{bmatrix} \text{<START>} & \text{A} & \text{cat} & \text{sitting} & \text{on} & \text{the mat} \\ \text{<START>} & \text{A} & \text{dog} & \text{lying} & \text{on} & \text{the bed} \end{bmatrix}, \quad \text{shape: } (2, 6, 300)
-     $$
+   - 假设描述嵌入如下：
+     
+$$
+\text{x} = \begin{bmatrix} \text{<START>} & \text{A} & \text{cat} & \text{sitting} & \text{on} & \text{the mat} \\ \text{<START>} & \text{A} & \text{dog} & \text{lying} & \text{on} & \text{the bed} \end{bmatrix}, \quad \text{shape: } (2, 6, 300)
+$$
 
 ### RNN 前向传播
 
 1. **第一时间步**
 
    - 用图像特征初始化隐藏状态 
-     $$
-     h_0 = \text{Linear}(\text{img-features})
-     $$
+
+$$
+h_0 = \text{Linear}(\text{img-features})
+$$
+
      形状为 (2,512)。
 
    - 输入第一个单词 `<START>`，生成隐藏状态 h_1 和输出。
@@ -105,9 +109,10 @@
 - 使用隐藏状态通过一个全连接层预测下一个单词的概率分布。
 
 - 最终输出预测为： 
-  $$
-  \text{output} = \text{softmax}(W \cdot h_t + b), \quad \text{shape: } (2, 6, \text{vocab\_size})
-  $$
+
+$$
+\text{output} = \text{softmax}(W \cdot h_t + b), \quad \text{shape: } (2, 6, \text{vocab\_size})
+$$
   
 
 
