@@ -69,7 +69,8 @@
    - 假设有 2 张图片，CNN 提取的特征：
      
 $$
-\text{img-features} = \begin{bmatrix} f_1^{(1)}, f_2^{(1)}, \dots, f_{300}^{(1)} \\ f_1^{(2)}, f_2^{(2)}, \dots, f_{300}^{(2)} \end{bmatrix}, \quad \text{shape: } (2, 300)
+\text{img-features} = \begin{bmatrix} f_1^{(1)}, f_2^{(1)}, \dots, f_{300}^{(1)} \\ f_1^{(2)}, f_2^{(2)}, \dots, f_{300}^{(2)} \end{bmatrix}, \quad 
+\text{shape: } (2, 300)
 $$
      
 
@@ -78,7 +79,8 @@ $$
    - 假设描述嵌入如下：
      
 $$
-\text{x} = \begin{bmatrix} \text{<START>} & \text{A} & \text{cat} & \text{sitting} & \text{on} & \text{the mat} \\ \text{<START>} & \text{A} & \text{dog} & \text{lying} & \text{on} & \text{the bed} \end{bmatrix}, \quad \text{shape: } (2, 6, 300)
+\text{x} = \begin{bmatrix} \text{<START>} & \text{A} & \text{cat} & \text{sitting} & \text{on} & \text{the mat} \\ \text{<START>} & \text{A} & \text{dog} & \text{lying} & \text{on} & \text{the bed} \end{bmatrix}, \quad 
+\text{shape: } (2, 6, 300)
 $$
 
 ### RNN 前向传播
@@ -90,7 +92,6 @@ $$
 $$
 h_0 = \text{Linear}(\text{img-features})
 $$
-
 
    - 输入第一个单词 `<START>`，生成隐藏状态 h_1 和输出。
 
@@ -111,7 +112,7 @@ $$
 
 
 $$
-\text{output} = \text{softmax}(W \cdot h_t + b), \quad \text{shape: } (2, 6, \text{vocab\_size})
+\text{output} = \text{softmax}(W \cdot h_t + b), \quad \text{shape: } (2, 6, \text{vocab-size})
 $$
   
 
