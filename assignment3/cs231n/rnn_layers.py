@@ -73,6 +73,12 @@ def rnn_step_forward(x, prev_h, Wx, Wh, b):
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    next_h_raw = np.dot(x, Wx) + np.dot(prev_h, Wh) + b
+    next_h = np.tanh(next_h_raw)
+
+    cache = (x, prev_h, Wx, Wh, b, next_h)
+
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -104,6 +110,17 @@ def rnn_step_backward(dnext_h, cache):
     # of the output value from tanh.                                             #
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+    x, prev_h, Wx, Wh, b, next_h = cache
+
+    dtanh = dnext_h * (1 - next_h ** 2)
+
+    # 梯度计算
+    db = np.sum(dtanh, axis=0)                          
+    dWx = np.dot(x.T, dtanh)                           
+    dWh = np.dot(prev_h.T, dtanh)                       
+    dx = np.dot(dtanh, Wx.T)                           
+    dprev_h = np.dot(dtanh, Wh.T)                      
 
     pass
 
@@ -140,6 +157,31 @@ def rnn_forward(x, h0, Wx, Wh, b):
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    N, T, D = x.shape 
+    # 其中N是样本数，T是时间步数
+
+    # 初始化 
+    H = h0.shape[1]    
+    h = np.zeros((N, T, H))  
+    cache = []              
+    prev_h = h0
+
+    # 遍历时间步
+    for t in range(T):
+
+        # 当前时间步输入 (N, D)
+        xt = x[:, t, :]
+        
+        # 计算当前时间步的隐藏状态
+        next_h, step_cache = rnn_step_forward(xt, prev_h, Wx, Wh, b)
+        
+        # 存储隐藏状态和缓存
+        h[:, t, :] = next_h
+        cache.append(step_cache)
+        
+        # 更新前一时间步的隐藏状态
+        prev_h = next_h
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -175,6 +217,37 @@ def rnn_backward(dh, cache):
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    N, T, H = dh.shape                 
+    D = cache[0][0].shape[1]   
+    
+    # 初始化梯度变量
+    dx = np.zeros((N, T, D))           
+    dWx = np.zeros((D, H))             
+    dWh = np.zeros((H, H))             
+    db = np.zeros(H)                   
+    dh_prev = np.zeros((N, H))   
+
+    # 逆序遍历时间步
+    for t in reversed(range(T)):
+
+        # 当前时间步的总梯度
+        dht = dh[:, t, :] + dh_prev
+        
+        # 当前时间步的反向传播
+        step_dx, step_dprev_h, step_dWx, step_dWh, step_db = rnn_step_backward(dht, cache[t])
+        
+        # 累积梯度
+        dx[:, t, :] = step_dx
+        dWx += step_dWx
+        dWh += step_dWh
+        db += step_db
+        
+        # 更新隐藏状态的反向梯度
+        dh_prev = step_dprev_h
+
+    # dh0 是初始隐藏状态的梯度
+    dh0 = dh_prev
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -207,6 +280,10 @@ def word_embedding_forward(x, W):
     # HINT: This can be done in one line using NumPy's array indexing.           #
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+    out = W[x]
+
+    cache = (x, W)
 
     pass
 
@@ -241,6 +318,15 @@ def word_embedding_backward(dout, cache):
     # HINT: Look up the function np.add.at                                       #
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+    
+    # 从缓存中提取数据
+    x, W = cache
+
+    # 初始化 dW 为零矩阵
+    dW = np.zeros_like(W)  # 形状为 (V, D)
+    
+    # 使用 np.add.at 将 dout 的梯度累积到对应的 W 行
+    np.add.at(dW, x, dout)
 
     pass
 
