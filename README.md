@@ -65,6 +65,9 @@
 4. 用于图像描述的RNN的实现 [rnn.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/classifiers/rnn.py)
 5. 图像描述模型的封装 [captioning_solver.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/captioning_solver.py)
 ### Q2: Image Captioning with Transformers
+1. Transformer的作业引导 [Transformer_Captioning.ipynb](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/Transformer_Captioning.ipynb)
+2. 多头（自）注意力机制和位置编码的实现 [transformer_layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/transformer_layers.py)
+3. 用于图像描述的Transformer的实现 [transformer.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/classifiers/transformer.py)
 ### Q3: Generative Adversarial Networks
 ### Q4: Self-Supervised Learning for Image Classification
 ### Extra Credit: Image Captioning with LSTMs
