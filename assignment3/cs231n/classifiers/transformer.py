@@ -90,6 +90,26 @@ class CaptioningTransformer(nn.Module):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+        # 1. Embed captions and add positional encoding
+        captions_embed = self.embedding(captions)  # Shape: (N, T, W)
+        captions_embed = self.positional_encoding(captions_embed)  # Shape: (N, T, W)
+
+        # 2. Project image features to the same dimension as word embeddings
+        features_proj = self.visual_projection(features).unsqueeze(1)  # Shape: (N, 1, W)
+        
+        # 3. Prepare target mask to mask future timesteps
+        tgt_mask = torch.tril(torch.ones(T, T, device=captions.device)).unsqueeze(0)  # Shape: (1, T, T)
+        
+        # 4. Apply decoder to combine captions and image features
+        decoder_output = self.transformer(
+            tgt=captions_embed, 
+            memory=features_proj, 
+            tgt_mask=tgt_mask
+        )  # Shape: (N, T, W)
+        
+        # 5. Map decoder output to scores for each token
+        scores = self.output(decoder_output)  # Shape: (N, T, V)
+    
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
