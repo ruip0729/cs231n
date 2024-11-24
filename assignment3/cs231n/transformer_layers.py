@@ -38,6 +38,15 @@ class PositionalEncoding(nn.Module):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+        position = torch.arange(0, max_len).unsqueeze(1)  # (max_len, 1)
+        div_term = torch.exp(torch.arange(0, embed_dim, 2) * (-torch.log(torch.tensor(10000.0)) / embed_dim))  # (embed_dim//2)
+
+        # 计算正弦和余弦值
+        pe[0, :, 0::2] = torch.sin(position * div_term)  # 偶数维度：sin
+        pe[0, :, 1::2] = torch.cos(position * div_term)  # 奇数维度：cos
+
+        self.register_buffer('pe', pe)
+
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -69,6 +78,9 @@ class PositionalEncoding(nn.Module):
         # afterward. This should only take a few lines of code.                    #
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        pos_enc = self.pe[:, :S, :]
+
+        output = x + pos_enc
 
         pass
 
@@ -76,7 +88,7 @@ class PositionalEncoding(nn.Module):
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
-        return output
+        return self.dropout(output)
 
 
 class MultiHeadAttention(nn.Module):
@@ -164,6 +176,33 @@ class MultiHeadAttention(nn.Module):
         #     function masked_fill may come in handy.                              #
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+        H = self.n_head 
+        D = self.head_dim 
+
+        # Step 1: Linear projections
+        query = self.query(query).view(N, S, H, D).transpose(1, 2)  # (N, H, S, D)
+        key = self.key(key).view(N, T, H, D).transpose(1, 2)        # (N, H, T, D)
+        value = self.value(value).view(N, T, H, D).transpose(1, 2)  # (N, H, T, D)
+
+        # Step 2: Scaled Dot-Product Attention
+        # Compute attention scores
+        scores = torch.matmul(query, key.transpose(-2, -1)) / (D ** 0.5)  # (N, H, S, T)
+
+        # Apply attention mask
+        if attn_mask is not None:
+            scores = scores.masked_fill(attn_mask.unsqueeze(0).unsqueeze(1) == 0, float('-inf'))
+
+        # Normalize scores to probabilities
+        attn_weights = F.softmax(scores, dim=-1)  # (N, H, S, T)
+        attn_weights = self.attn_drop(attn_weights)
+
+        # Compute weighted values
+        attn_output = torch.matmul(attn_weights, value)  # (N, H, S, D)
+
+        # Step 3: Concatenate heads and project
+        attn_output = attn_output.transpose(1, 2).contiguous().view(N, S, E)  # (N, S, E)
+        output = self.proj(attn_output)  # (N, S, E)
 
         pass
 
