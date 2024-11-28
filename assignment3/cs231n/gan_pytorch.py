@@ -29,8 +29,7 @@ def sample_noise(batch_size, dim, seed=None):
         torch.manual_seed(seed)
 
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-    pass
+    return 2 * torch.rand(batch_size, dim) - 1
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -50,6 +49,21 @@ def discriminator(seed=None):
     # HINT: nn.Sequential might be helpful. You'll start by calling Flatten().   #
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+    model = nn.Sequential(
+        # 将输入展平为 784 维度
+        nn.Flatten(),
+        # 第一个 Fully Connected 层
+        nn.Linear(784, 256),
+        # LeakyReLU 激活函数
+        nn.LeakyReLU(0.01),
+        # 第二个 Fully Connected 层
+        nn.Linear(256, 256),
+        # LeakyReLU 激活函数
+        nn.LeakyReLU(0.01),
+        # 第三个 Fully Connected 层，输出 1 个数值
+        nn.Linear(256, 1)
+    )
 
     pass
 
@@ -76,6 +90,23 @@ def generator(noise_dim=NOISE_DIM, seed=None):
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    model = nn.Sequential(
+        # 第一个 Fully Connected 层，输入维度是 noise_dim，输出维度是 1024
+        nn.Linear(noise_dim, 1024),
+        # 使用 ReLU 激活函数
+        nn.ReLU(),
+        
+        # 第二个 Fully Connected 层，输入维度 1024，输出维度 1024
+        nn.Linear(1024, 1024),
+        # 使用 ReLU 激活函数
+        nn.ReLU(),
+        
+        # 第三个 Fully Connected 层，输入维度 1024，输出维度 784
+        nn.Linear(1024, 784),
+        # 使用 TanH 激活函数，将输出的图像限制在 [-1, 1] 范围
+        nn.Tanh()
+    )
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -96,7 +127,7 @@ def bce_loss(input, target):
     - A PyTorch Tensor containing the mean BCE loss over the minibatch of input data.
     """
     bce = nn.BCEWithLogitsLoss()
-    return bce(input.squeeze(), target)
+    return bce(input, target)
 
 def discriminator_loss(logits_real, logits_fake):
     """
@@ -111,6 +142,18 @@ def discriminator_loss(logits_real, logits_fake):
     """
     loss = None
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+    # 生成真实和假的标签，真实标签为 1，假标签为 0
+    true_labels = torch.ones_like(logits_real).type(logits_real.dtype)  # 对真实数据的标签
+    false_labels = torch.zeros_like(logits_fake).type(logits_fake.dtype)  # 对生成数据的标签
+
+    # 计算真实数据的损失
+    real_loss = bce_loss(logits_real, true_labels)
+    # 计算生成数据的损失
+    fake_loss = bce_loss(logits_fake, false_labels)
+
+    # 判别器总损失是两个部分的和
+    loss = real_loss + fake_loss
 
     pass
 
@@ -129,6 +172,12 @@ def generator_loss(logits_fake):
     """
     loss = None
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+    # 生成器的目标是让判别器认为生成的图像是“真实”的，因此标签为 1
+    true_labels = torch.ones_like(logits_fake).type(logits_fake.dtype)
+
+    # 计算生成器损失
+    loss = bce_loss(logits_fake, true_labels)
 
     pass
 
@@ -149,6 +198,12 @@ def get_optimizer(model):
     optimizer = None
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    optimizer = optim.Adam(
+        model.parameters(),   # 优化模型的所有参数
+        lr=1e-3,              # 学习率为 1e-3
+        betas=(0.5, 0.999)    # 动量项 beta1=0.5, beta2=0.999
+    )
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -168,6 +223,15 @@ def ls_discriminator_loss(scores_real, scores_fake):
     loss = None
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    # 计算真实数据的损失：期望 D(x) 接近 1
+    real_loss = 0.5 * torch.mean((scores_real - 1) ** 2)
+
+    # 计算生成数据的损失：期望 D(G(z)) 接近 0
+    fake_loss = 0.5 * torch.mean(scores_fake ** 2)
+
+    # 判别器总损失是两部分的和
+    loss = real_loss + fake_loss
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -186,6 +250,9 @@ def ls_generator_loss(scores_fake):
     loss = None
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    # 生成器的目标是使 D(G(z)) 接近 1，因此损失是 (D(G(z)) - 1)^2
+    loss = 0.5 * torch.mean((scores_fake - 1) ** 2)
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -203,6 +270,22 @@ def build_dc_classifier(batch_size):
     # HINT: nn.Sequential might be helpful.                                      #
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+    model = nn.Sequential(
+        Unflatten(batch_size, 1, 28, 28),
+        nn.Conv2d(1, 32, kernel_size=5, stride=1),
+        nn.LeakyReLU(0.01),
+        nn.MaxPool2d(kernel_size=2, stride=2),
+        nn.Conv2d(32, 64, kernel_size=5, stride=1),
+        nn.LeakyReLU(0.01),
+        nn.MaxPool2d(kernel_size=2, stride=2),
+        Flatten(),
+        nn.Linear(1024, 4 * 4 * 64),
+        nn.LeakyReLU(0.01),
+        nn.Linear(4 * 4 * 64, 1)
+    )
+
+    return model
 
     pass
 
@@ -224,6 +307,23 @@ def build_dc_generator(noise_dim=NOISE_DIM):
     # HINT: nn.Sequential might be helpful.                                      #
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+    model = nn.Sequential(
+        nn.Linear(noise_dim, 1024),
+        nn.ReLU(),
+        nn.BatchNorm1d(1024),
+        nn.Linear(1024, 7 * 7 * 128),
+        nn.ReLU(),
+        nn.BatchNorm1d(7 * 7 * 128),
+        Unflatten(-1, 128, 7, 7),
+        nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),
+        nn.ReLU(),
+        nn.BatchNorm2d(64),
+        nn.ConvTranspose2d(64, 1, kernel_size=4, stride=2, padding=1),
+        nn.Tanh(),
+    )
+
+    return model
 
     pass
 
