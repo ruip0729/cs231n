@@ -69,5 +69,7 @@
 2. 多头（自）注意力机制和位置编码的实现 [transformer_layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/transformer_layers.py)
 3. 用于图像描述的Transformer的实现 [transformer.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/classifiers/transformer.py)
 ### Q3: Generative Adversarial Networks
+1. GAN的作业引导 [Generative_Adversarial_Networks.ipynb](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/Generative_Adversarial_Networks.ipynb)
+2. GAN的生成器与判别器的实现（多种损失） [gan_pytorch.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/gan_pytorch.py)
 ### Q4: Self-Supervised Learning for Image Classification
 ### Extra Credit: Image Captioning with LSTMs
