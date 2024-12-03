@@ -18,7 +18,15 @@ def sim(z_i, z_j):
     #                                                                            #
     # HINT: torch.linalg.norm might be helpful.                                  #
     ##############################################################################
-    
+
+    # 计算两个向量的点积
+    dot_product = torch.sum(z_i * z_j)
+    # 计算向量z_i的范数
+    norm_i = torch.linalg.norm(z_i)
+    # 计算向量z_j的范数
+    norm_j = torch.linalg.norm(z_j)
+    # 计算归一化点积，即点积除以两个向量范数的乘积
+    norm_dot_product = dot_product / (norm_i * norm_j)
     
     ##############################################################################
     #                               END OF YOUR CODE                             #
@@ -56,6 +64,20 @@ def simclr_loss_naive(out_left, out_right, tau):
         ##############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+        # 计算 l(k, k+N)
+        left_numerator = (sim(z_k, z_k_N) / tau).exp()
+        left_need_sim = out[np.arange(2 * N) != k]
+        left_denominator = torch.tensor([sim(z_k, z_i) / tau for z_i in left_need_sim]).exp().sum()
+        left = -(left_numerator / left_denominator).log()
+
+        # 计算 l(k+N, k)
+        right_numerator = (sim(z_k_N, z_k) / tau).exp()
+        right_need_sim = out[np.arange(2 * N) != k + N]
+        right_denominator = torch.tensor([sim(z_k_N, z_i) / tau for z_i in right_need_sim]).exp().sum()
+        right = -(right_numerator / right_denominator).log()
+
+        total_loss += left + right
+        
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -90,6 +112,25 @@ def sim_positive_pairs(out_left, out_right):
     
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    # 获取批次大小（也就是正样本对的数量）
+    N = out_left.shape[0]
+    # 初始化一个空的Nx1张量，用于存储正样本对的归一化点积
+    pos_pairs = torch.zeros((N, 1))
+    for k in range(N):
+        # 获取第k对正样本对应的向量
+        z_k_left = out_left[k]
+        z_k_right = out_right[k]
+        # 计算点积
+        dot_product = torch.sum(z_k_left * z_k_right)
+        # 计算左向量的范数
+        norm_left = torch.linalg.norm(z_k_left)
+        # 计算右向量的范数
+        norm_right = torch.linalg.norm(z_k_right)
+        # 计算归一化点积
+        norm_dot_product = dot_product / (norm_left * norm_right)
+        # 将第k对正样本的归一化点积存入结果张量中
+        pos_pairs[k, 0] = norm_dot_product
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -117,6 +158,27 @@ def compute_sim_matrix(out):
     ##############################################################################
     
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+    # 获取输入张量的行数（也就是增强样本的数量），应为2N
+    num_samples = out.shape[0]
+    # 初始化一个2N x 2N的全零张量，用于存储相似度矩阵
+    sim_matrix = torch.zeros((num_samples, num_samples))
+    for i in range(num_samples):
+        for j in range(num_samples):
+            # 获取第i个样本的特征向量
+            sample_i = out[i]
+            # 获取第j个样本的特征向量
+            sample_j = out[j]
+            # 计算点积
+            dot_product = torch.sum(sample_i * sample_j)
+            # 计算第i个样本特征向量的范数
+            norm_i = torch.linalg.norm(sample_i)
+            # 计算第j个样本特征向量的范数
+            norm_j = torch.linalg.norm(sample_j)
+            # 计算归一化点积
+            norm_dot_product = dot_product / (norm_i * norm_j)
+            # 将归一化点积结果存入相似度矩阵相应位置
+            sim_matrix[i, j] = norm_dot_product
 
     pass
 
@@ -147,7 +209,7 @@ def simclr_loss_vectorized(out_left, out_right, tau, device='cuda'):
     
     # Step 1: Use sim_matrix to compute the denominator value for all augmented samples.
     # Hint: Compute e^{sim / tau} and store into exponential, which should have shape 2N x 2N.
-    exponential = None
+    exponential = (sim_matrix / tau).exp().to(device)
     
     # This binary mask zeros out terms where k=i.
     mask = (torch.ones_like(exponential, device=device) - torch.eye(2 * N, device=device)).to(device).bool()
@@ -156,7 +218,8 @@ def simclr_loss_vectorized(out_left, out_right, tau, device='cuda'):
     exponential = exponential.masked_select(mask).view(2 * N, -1)  # [2*N, 2*N-1]
     
     # Hint: Compute the denominator values for all augmented samples. This should be a 2N x 1 vector.
-    denom = None
+    denom = exponential.sum(dim=1)
+
 
     # Step 2: Compute similarity between positive pairs.
     # You can do this in two ways: 
@@ -164,12 +227,15 @@ def simclr_loss_vectorized(out_left, out_right, tau, device='cuda'):
     # Option 2: Use sim_positive_pairs().
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    sim_pairs = sim_positive_pairs(out_left, out_right).to(device)
+    sim_pairs = torch.cat([sim_pairs, sim_pairs], dim=0)
+
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     
     # Step 3: Compute the numerator value for all augmented samples.
-    numerator = None
+    numerator = (sim_pairs / tau).exp()
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     pass
@@ -179,7 +245,7 @@ def simclr_loss_vectorized(out_left, out_right, tau, device='cuda'):
     # Step 4: Now that you have the numerator and denominator for all augmented samples, compute the total loss.
     loss = None
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+    loss = torch.mean(-torch.log(numerator / denom))
     pass
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
