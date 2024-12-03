@@ -78,3 +78,6 @@
 4. SimCLR对比损失的实现 [contrastive_loss.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/simclr/contrastive_loss.py)
 5. SimCLR的训练、验证和测试的实现 [utils.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/simclr/utils.py)
 ### Extra Credit: Image Captioning with LSTMs
+1. LSTM的作业引导 [LSTM_Captioning.ipynb](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/LSTM_Captioning.ipynb)
+2. LSTM的前向传播和反向传播的实现 [rnn_layers.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/rnn_layers.py)
+3. 用于图像描述的LSTM的实现 [rnn.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/classifiers/rnn.py)
