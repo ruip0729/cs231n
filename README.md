@@ -1,7 +1,7 @@
 # cs231n-assignment(2024)
 [CS231n: Convolutional Neural Networks for Visual Recognition](https://cs231n.github.io/) 课程是经典的CV领域入门课程之一，我主要按照[官方的课程顺序](https://cs231n.stanford.edu/schedule.html)，结合课程的[官方笔记](https://cs231n.github.io/) 进行学习，期间学习了一些[视频课程](https://www.bilibili.com/video/BV1K7411W7So?spm_id_from=333.788.videopod.episodes&vd_source=9b0bab44f379d04b6954be4ca93b4b5a) （视频会比笔记更容易理解），完成了3次作业，并在此记录作业的解答过程。
 
-注：作业中的代码实现、公式推导均为本人所写，如有错误，欢迎指正。
+注：作业中的代码实现、公式推导为本人所写（少部分有参考），如有错误，欢迎指正。
 
 ## 课程笔记
 [CS231n 官方笔记授权翻译总集篇发布](https://github.com/whyscience/CS231n-Note-Translation_CN/tree/master)
