@@ -72,4 +72,9 @@
 1. GAN的作业引导 [Generative_Adversarial_Networks.ipynb](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/Generative_Adversarial_Networks.ipynb)
 2. GAN的生成器与判别器的实现（多种损失） [gan_pytorch.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/gan_pytorch.py)
 ### Q4: Self-Supervised Learning for Image Classification
+1. SSL的作业引导 [Self_Supervised_Learning.ipynb](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/Self_Supervised_Learning.ipynb)
+2. 数据增强的实现 [data_utils.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/simclr/data_utils.py)
+3. SimCLR中的Base Encoder和Projection Head的实现 [model.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/simclr/model.py)
+4. SimCLR对比损失的实现 [contrastive_loss.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/simclr/contrastive_loss.py)
+5. SimCLR的训练、验证和测试的实现 [utils.py](https://github.com/ruip0729/cs231n-assignment/blob/main/assignment3/cs231n/simclr/utils.py)
 ### Extra Credit: Image Captioning with LSTMs
